@@ -12,6 +12,10 @@ export default function Home() {
     status: boolean;
   }
 const [users, setUsers] = useState<User[]>([])
+const [searchTerm, setSearchTerm] = useState('')
+const filteredUsers = users.filter((user) =>
+  user.nome.toLowerCase().includes(searchTerm.toLowerCase())
+)
 async function handleGetUsers() {
   const request = await fetch('https://api-academia-alpha.vercel.app/gym')
   const data = await request.json()
@@ -20,6 +24,8 @@ async function handleGetUsers() {
 }
 
 const handleDeleteUser = async (id: number) => {
+  const confirmDelete = confirm("Deseja excluir o usuario?")
+  if (confirmDelete == true){
   try {
     const response = await fetch(`https://api-academia-alpha.vercel.app/gym/user/${id}`, {
         method: "DELETE",
@@ -36,7 +42,8 @@ const handleDeleteUser = async (id: number) => {
 
 } catch (error) {
     console.error("Erro ao excluir charada:", error)
-}
+}}
+return
 
 }
 
@@ -45,85 +52,89 @@ useEffect(() => {
 }, [])
 
   return (
-    <div className="h-screen bg-gray-50 w-full pt-10 flex flex-col items-center ">
-      <h1 className="text-center text-black text-3xl">Academia ADM</h1>
-      <div className="container mt-5 w-full h-[80%] ">
+    <div className="h-screen bg-black w-full pt-10 flex flex-col items-center text-white">
+    <h1 className="text-center text-white text-3xl">Pulse Fit</h1>
+  
+    <div className="container mt-5 w-full h-[80%]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <div className="bg-[#0d0d0d] rounded-lg shadow-lg overflow-hidden border border-[#2a2a2a]">
+          <div className="px-6 py-4 border-b border-[#2a2a2a] bg-black">
             <div className="flex items-center space-x-3">
-              <Users className="h-6 w-6 text-black" />
-              <h2 className="text-xl font-semibold text-gray-800">Lista de Usuários</h2>
-              <button onClick={() => router.push('/create')} className="ml-auto px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 cursor-pointer transition-all shadow-md">
-              Novo Usuário
-            </button>
-
+              <Users className="h-6 w-6 text-white" />
+              <h2 className="text-xl font-semibold text-white">Lista de Usuários</h2>
+              <button 
+                onClick={() => router.push('/create')} 
+                className="ml-auto px-4 py-2 bg-transparent border border-gray-200 text-gray-200 hover:text-black rounded-lg hover:bg-gray-200 cursor-pointer transition-all shadow-md"
+              >
+                Novo Usuário
+              </button>
             </div>
           </div>
-          {users.length > 0? 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Nome
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    CPF
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Ações
-                  </th>
-               </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
-                  <tr key={user.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-black">
-                      {user.id}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.nome}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {user.cpf}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      {user.status == true ? 
-                        <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800'>
-                            Ativo
-                        </span>
-                      :
-                      <span className='px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800'>
-                      Inativo
-                      </span>
-                    }
-                    </td>
-                    <td className=" flex  gap-3 px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <button onClick={ () => handleDeleteUser(user.id)} className="border-red-100 border cursor-pointer hover:bg-transparent hover:border-red-800 transition-all bg-red-100 text-red-800 w-7 h-7 rounded flex items-center justify-center">
-                      <Trash className="h-4 w-4" />
-                    </button>
-                    <button onClick={ () => router.push(`/edit?id=${user.id}`)} className="border-blue-100 border cursor-pointer hover:bg-transparent hover:border-blue-800 transition-all bg-blue-100 text-blue-800 w-7 h-7 rounded flex items-center justify-center">
-                      <UserPen className="h-4 w-4" />
-                    </button>     
-                    </td>
+  
+          {users.length > 0 ? (
+            <div className="overflow-x-auto">
+              <div className="px-6 py-4 bg-black">
+                <input
+                  type="text"
+                  placeholder="Buscar usuário por nome..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full p-2 rounded border border-[#2a2a2a] bg-[#1a1a1a] text-white placeholder-gray-500"
+                />
+              </div>
+              <table className="min-w-full divide-y divide-[#2a2a2a]">
+                <thead className="bg-black">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">ID</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Nome</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">CPF</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ações</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-         :   <div className="p-4 text-center text-gray-500">Nenhum usuário cadastrado.</div>
-        }
+                </thead>
+                <tbody className="bg-[#0d0d0d] divide-y divide-[#2a2a2a]">
+                  {filteredUsers.map((user) => (
+                    <tr key={user.id} className="hover:bg-[#1a1a1a] transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-white">{user.id}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{user.nome}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-white">{user.cpf}</td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        {user.status === true ? (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-800 text-green-100">
+                            Ativo
+                          </span>
+                        ) : (
+                          <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-800 text-red-100">
+                            Inativo
+                          </span>
+                        )}
+                      </td>
+                      <td className="flex gap-3 px-6 py-4 whitespace-nowrap text-sm text-white">
+                        <button 
+                          onClick={() => handleDeleteUser(user.id)} 
+                          className=" border cursor-pointer hover:text-white border-red-500 text-red-500 transition-all hover:bg-red-500 w-7 h-7 rounded flex items-center justify-center"
+                        >
+                          <Trash className="h-4 w-4" />
+                        </button>
+                        <button 
+                          onClick={() => router.push(`/edit?id=${user.id}`)} 
+                          className="border cursor-pointer hover:bg-blue-500 border-blue-500 transition-all bg-transparent text-blue-500 hover:text-white w-7 h-7 rounded flex items-center justify-center"
+                        >
+                          <UserPen className="h-4 w-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="p-4 text-center text-gray-400">Nenhum usuário cadastrado.</div>
+          )}
         </div>
-        
-      </div>
       </div>
     </div>
+  </div>
+  
   );
 }
