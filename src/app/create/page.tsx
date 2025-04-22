@@ -14,6 +14,7 @@ export default function Create() {
     nome: string;
     cpf: string;
     imagem: FileList;
+    telefone: string
   }
 
   const handleSendBack = async (formData: IFormInput) => {
@@ -22,6 +23,7 @@ export default function Create() {
 
       dados.append("nome", formData.nome);
       dados.append("cpf", formData.cpf);
+      dados.append("telefone", formData.telefone);
 
       if (formData.imagem && formData.imagem.length > 0) {
         dados.append("imagem", formData.imagem[0])
@@ -60,6 +62,16 @@ export default function Create() {
         required
         className="bg-[#0d0d0d] border border-[#2a2a2a] text-white rounded-md px-4 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-300"
       />
+
+    <label className="text-gray-200 font-medium text-sm mt-4">Telefone</label>
+          <input
+            maxLength={11}
+            {...register("telefone")}
+            required
+            
+            className="bg-[#0d0d0d] border border-[#2a2a2a] text-white rounded-md px-4 py-2 mt-2 focus:outline-none focus:ring-2 focus:ring-gray-300 transition duration-300"
+          />
+  
   
       <label className="text-gray-200 font-medium text-sm mt-4">CPF</label>
       <input
