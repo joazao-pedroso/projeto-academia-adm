@@ -21,7 +21,7 @@ export default function Home() {
   const [popupDeleteId, setPopupDeleteId] = useState<number | null>(null)
 
   const filteredUsers = users.filter((user) =>
-    user.nome.toLowerCase().includes(searchTerm.toLowerCase())
+    user.nome.toLowerCase().includes(searchTerm.toLowerCase()) || user.cpf.toLowerCase().includes(searchTerm.toLowerCase())
   )
 
   async function handleGetUsers() {
@@ -55,13 +55,13 @@ export default function Home() {
 
       const updatedUsers = users.map(user =>
         user.id === id ? { ...user, status: status } : user
-      );
-      setUsers(updatedUsers);
+      )
+      setUsers(updatedUsers)
 
-      const data = await response.json();
-      console.log(data);
+      const data = await response.json()
+      console.log(data)
     } catch (error) {
-      console.error("Erro ao atualizar status:", error);
+      console.error("Erro ao atualizar status:", error)
     }
   }
 
