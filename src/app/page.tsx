@@ -27,7 +27,7 @@ async function handleChangeStats(id: number, status: boolean) {
   const bodyData = { status: status.toString(), id }
 
   try {
-    const response = await fetch(`http://10.142.227.147:5000/gym/user/${id}`, {
+    const response = await fetch(`https://api-academia-alpha.vercel.app/gym/user/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json"
