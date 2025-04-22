@@ -1,6 +1,6 @@
 'use client'
 
-import { Trash, Users, UserPen  } from 'lucide-react';
+import { Trash, Users, UserPen, LockKeyhole, LockKeyholeOpen } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation"
 export default function Home() {
@@ -22,6 +22,35 @@ async function handleGetUsers() {
   const safeUsers = Array.isArray(data) ? data : []
   setUsers(safeUsers)
 }
+
+async function handleChangeStats(id: number, status: boolean) {
+  const bodyData = { status: status.toString(), id }
+
+  try {
+    const response = await fetch(`http://10.142.227.147:5000/gym/user/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(bodyData),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erro ao atualizar status: ${response.statusText}`);
+    }
+
+    const updatedUsers = users.map(user =>
+      user.id === id ? { ...user, status: status } : user
+    );
+    setUsers(updatedUsers);
+
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error("Erro ao atualizar status:", error);
+  }
+}
+
 
 const handleDeleteUser = async (id: number) => {
   const confirmDelete = confirm("Deseja excluir o usuario?")
@@ -121,6 +150,13 @@ useEffect(() => {
                           className="border cursor-pointer hover:bg-blue-500 border-blue-500 transition-all bg-transparent text-blue-500 hover:text-white w-7 h-7 rounded flex items-center justify-center"
                         >
                           <UserPen className="h-4 w-4" />
+                        </button>
+                        <button 
+                          onClick={() => handleChangeStats(user.id, !user.status)} 
+                          className="border cursor-pointer hover:bg-orange-500 border-orange-500 transition-all bg-transparent text-orange-500 hover:text-white w-7 h-7 rounded flex items-center justify-center"
+                        >
+                          {user.status == true ? <LockKeyhole className="h-4 w-4" /> : <LockKeyholeOpen className="h-4 w-4" /> }
+                          
                         </button>
                       </td>
                     </tr>
